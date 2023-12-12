@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-    
-    <head>
+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calcualtor</title>
@@ -21,6 +21,8 @@
             height: 40px;
             padding: 10px;
             margin: 20px;
+            font-size: 20px;
+            color: rgb(95, 93, 89);
         }
 
         .c_body {
@@ -29,16 +31,19 @@
             flex-direction: row;
             padding: 10px;
         }
-        
+
         button {
             height: 40px;
             margin-top: 10px;
             margin-bottom: 20px;
             width: 80px;
-            font-size: 15px;
+            font-size: 16px;
+            font-weight: bold;
             border-radius: 7px;
+            color: #fff;
+            background-color: rgb(99, 104, 112);
         }
-        
+
         button:hover {
             background-color: rgb(60, 60, 60);
         }
@@ -50,6 +55,7 @@
         .equal {
             background-color: rgb(13, 13, 255);
         }
+
         .equal:hover {
             background-color: rgb(81, 81, 255);
         }
@@ -57,63 +63,158 @@
         .symbol {
             font-size: 20px;
         }
+
+        button.disabled {
+            pointer-events: none;
+        }
     </style>
+    <script>
+        var StordValue;
+        function add(value) {
+            StordValue = value;
+            document.getElementById('c_display').value += value;
+            if (value == 'ln' || value == 'log') {
+                calculateLogLn();
+            }
+            else if (value == 'Inv') {
+                calculateInv();
+            }
+        }
+        function RadDeg() {
+            if (StordValue == 'Rad') {
+                const button = document.getElementById('Rad');
+                button.disabled = true;
+            }
+            else if (StordValue == 'Deg') {
+                const button = document.getElementById('Rad');
+                button.disabled = true;
+            }
+        }
+
+        function stordAns() {
+            const display = document.getElementById('c_display').value;
+            return display
+        }
+        function printStordAns() {
+            const d = document.getElementById('c_display').value;
+            add(eval(d));
+        }
+        function ans() {
+            document.getElementById('c_display').value = document.getElementById('c_display').value.replaceAll(/ln/g, "Math.log")
+            document.getElementById('c_display').value = document.getElementById('c_display').value.replaceAll(/log/g, "Math.log10")
+            document.getElementById('c_display').value = document.getElementById('c_display').value.replaceAll(/sin/g, "Math.sin")
+            document.getElementById('c_display').value = document.getElementById('c_display').value.replaceAll(/cos/g, "Math.cos")
+            document.getElementById('c_display').value = document.getElementById('c_display').value.replaceAll(/tan/g, "Math.tan")
+            document.getElementById('c_display').value = document.getElementById('c_display').value.replaceAll(/&Pi/g, "Math.PI")
+            return eval(stordAns());
+        }
+
+        function Clear() {
+            document.getElementById('c_display').value = '';
+        }
+
+        function calculate() {
+            if (document.getElementById('c_display').value != null) {
+                document.getElementById('c_display').value = ans();
+            }
+            else {
+                document.getElementById('c_display').value = 'Error';
+            }
+        }
+
+        function calculateAdv() {
+            const display = document.getElementById('c_display').value;
+            if (document.getElementById('c_display').value != 0 && StordValue == 'Inv') {
+                document.getElementById('c_display').value = 1 / eval(display);
+            }
+            else {
+                document.getElementById('c_display').value = 'Error';
+            }
+        }
+        function calculateLogLn() {
+            const display = document.getElementById('c_display').value;
+            if (document.getElementById('c_display').value == 'log') {
+                document.getElementById('c_display').value = (eval(Math.log10(display)));
+            }
+            else if (document.getElementById('c_display').value != 0 && StordValue == 'ln') {
+                document.getElementById('c_display').value = (eval(display));
+            }
+            else {
+                document.getElementById('c_display').value = 'Error';
+            }
+        }
+
+        document.addEventListener('keydown', function (event) {
+            const key = event.key;
+            if (/[0-9+\-*/.()]/.test(key)) {
+                add(key);
+            } else if (key === 'Enter') {
+                calculate();
+            } else if (key === 'Backspace') {
+                const currentValue = document.getElementById('c_display').value;
+                document.getElementById('c_display').value = currentValue.slice(0, -StordValue.length);
+            } else if (key === 'Escape') {
+                Clear();
+            }
+        });
+
+    </script>
 </head>
 
 <body>
     <div class="c_head">
-        <input class="c_display" type="text"></input>
+        <input class="c_display" id="c_display" type="text" disabled></input>
     </div>
     <div class="c_body">
 
         <div class="row">
-            <button value="Rad">Rad</button>
-            <button value="Inv">Inv</button>
-            <button value="Pi">&Pi;</button><!--Pi-->
-            <button value="E">e</button>
-            <button value="Ans">Ans</button>
+            <button onclick="RadDeg()" value="Rad" id="Rad" class="Rad">Rad</button>
+            <button onclick="add('Inv')" value="Inv">Inv</button>
+            <button onclick="add('&Pi')" value="Pi" class="symbol">&Pi;</button><!--Pi-->
+            <button onclick="add('E')" value="E">e</button>
+            <button onclick="printStordAns()" value="Ans">Ans</button>
         </div>
         <div class="row">
-            <button value="Deg">Deg</button>
-            <button value="Sin">sin</button>
-            <button value="Cos">cos</button>
-            <button value="Tan">tan</button>
-            <button value="EXP">EXP</button>
+            <button onclick="RadDeg()" value="Deg" id="Deg" class="Deg">Deg</button>
+            <button onclick="add('sin(')" value="Sin">sin</button>
+            <button onclick="add('cos(')" value="Cos">cos</button>
+            <button onclick="add('tan(')" value="Tan">tan</button>
+            <button onclick="add('EXP')" value="EXP">EXP</button>
         </div>
         <div class="row">
-            <button value="exclamation_mark">x&#33</button><!--exclamation mark-->
-            <button value="Ln">ln</button>
-            <button value="Log">log</button>
-            <button value="Root">&#8730</button><!--root-->
-            <button value="x_sup_y">x<sup>y</sup></button>
+            <button onclick="add('!')" value="exclamation_mark" class="symbol">x&#33</button><!--exclamation mark-->
+            <button onclick="add('ln(')" value="Ln">ln</button>
+            <button onclick="add('log(')" value="Log">log</button>
+            <button onclick="add('Math.sqrt(')" value="Root" class="symbol">&#8730</button><!--root-->
+            <button onclick="add('Math.pow(')" value="x_sup_y">&#94</button><!--^-->
         </div>
         <div class="row">
-            <button value="left_parenthesis" class="symbol">&#40</button><!--left parenthesis-->
-            <button value="7">&#55</button><!--7-->
-            <button value="4">&#52</button><!--4-->
-            <button value="1">&#49</button><!--1-->
-            <button value="0">&#48</button><!--0-->
+            <button onclick="add('(')" value="left_parenthesis" class="symbol">&#40</button><!--left parenthesis-->
+            <button onclick="add('7')" value="7">&#55</button><!--7-->
+            <button onclick="add('4')" value="4">&#52</button><!--4-->
+            <button onclick="add('1')" value="1">&#49</button><!--1-->
+            <button onclick="add('0')" value="0">&#48</button><!--0-->
         </div>
         <div class="row">
-            <button value="right parenthesis" class="symbol">&#41</button><!--right parenthesis-->
-            <button value="8">&#56</button><!--8-->
-            <button value="5">&#53</button><!--5-->
-            <button value="2">&#50</button><!--2-->
-            <button value="period" class="symbol">&#46</button><!--period-->
+            <button onclick="add(')')" value="right parenthesis" class="symbol">&#41</button><!--right parenthesis-->
+            <button onclick="add('8')" value="8">&#56</button><!--8-->
+            <button onclick="add('5')" value="5">&#53</button><!--5-->
+            <button onclick="add('2')" value="2">&#50</button><!--2-->
+            <button onclick="add('.')" value="period" class="symbol">&#46</button><!--period-->
         </div>
         <div class="row">
-            <button value="percent sign" class="symbol">&#37</button><!--percent sign-->
-            <button value="9">&#57</button><!--9-->
-            <button value="6">&#54</button><!--6-->
-            <button value="3">&#51</button><!--3-->
-            <button value="equals_to" class="symbol equal">&#61</button><!--equals-to-->
+            <button onclick="add('%')" value="percent sign" class="symbol">&#37</button><!--percent sign-->
+            <button onclick="add('9')" value="9">&#57</button><!--9-->
+            <button onclick="add('6')" value="6">&#54</button><!--6-->
+            <button onclick="add('3')" value="3">&#51</button><!--3-->
+            <button onclick="calculate()" value="equals_to" class="symbol equal">&#61</button><!--equals-to-->
         </div>
         <div class="row">
-            <button value="Clear">CE</button>
-            <button value="Slash" class="symbol">&#47</button><!--slash-->
-            <button value="Asterisk" class="symbol">&#42</button><!--asterisk-->
-            <button value="minus_sign" class="symbol">&#45</button><!--minus sign-->
-            <button value="plus_sign" class="symbol">&#43</button><!--plus sign-->
+            <button onclick="Clear()" value="Clear">CE</button>
+            <button onclick="add('/')" value="Slash" class="symbol">&#47</button><!--slash-->
+            <button onclick="add('*')" value="Asterisk" class="symbol">&#42</button><!--asterisk-->
+            <button onclick="add('-')" value="minus_sign" class="symbol">&#45</button><!--minus sign-->
+            <button onclick="add('+')" value="plus_sign" class="symbol">&#43</button><!--plus sign-->
         </div>
     </div>
 </body>
